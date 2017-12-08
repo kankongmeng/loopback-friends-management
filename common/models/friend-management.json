@@ -1,0 +1,40 @@
+{
+  "name": "FriendManagement",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "email": {
+      "type": "string",
+      "id": "true",
+      "required": true
+    },
+    "friend_email": {
+      "type": "string",
+      "id": "true",
+      "required": true
+    },
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "block": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "indexes":{
+    "type_index": {
+      "keys": {"type": 1}
+    },
+    "block_index": {
+      "keys": {"block": 1}
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

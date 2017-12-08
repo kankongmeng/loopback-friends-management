@@ -2,5 +2,15 @@
   "db": {
     "name": "db",
     "connector": "memory"
+  },
+  "mongoDs": {
+    "host": "",
+    "port": 0,
+    "url": "mongodb://root:45666564@loopback-demo-bookstore-shard-00-00-pyfmy.mongodb.net:27017,loopback-demo-bookstore-shard-00-01-pyfmy.mongodb.net:27017,loopback-demo-bookstore-shard-00-02-pyfmy.mongodb.net:27017/loopback_bookstore?ssl=true&replicaSet=loopback-demo-bookstore-shard-0&authSource=admin",
+    "database": "",
+    "password": "",
+    "name": "mongoDs",
+    "user": "",
+    "connector": "mongodb"
   }
 }

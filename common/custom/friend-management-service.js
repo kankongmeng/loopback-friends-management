@@ -20,11 +20,6 @@ module.exports = {
       friend_email: argObject.friends[1],
       type: FriendType.FRIEND,
       block: '0'
-    }, {
-      email: argObject.friends[1],
-      friend_email: argObject.friends[0],
-      type: FriendType.FRIEND,
-      block: '0'
     }, ], function(err, result) {
     
       // If error occurs when insert record.
@@ -40,5 +35,29 @@ module.exports = {
       cb(null, response);
     });
   },
+  
+  retrieveFriend: function(argString, cb) {
+    // Declare response structure
+    var response = { "success": false, "friends": "no result found.", "count": 0 };
+    var friends = [];
+    let filter = { where: { email: argString.email }};
+    
+    // Find friend email with input email
+    AppModels.FriendManagement.find(filter, function(err, result) {
+    
+      // If there is any record match.
+      if(result != "") {
+        for(var i = 0; i < result.length; i++) {
+          friends.push(result[i].friend_email);
+        }
+        if(friends.length > 0) {
+          response.success = true;
+          response.friends = friends;
+          response.count = friends.length;
+        }
+      }
+      cb(null, response);
+    });    
+  }
 
 };

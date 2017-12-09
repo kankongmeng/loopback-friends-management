@@ -42,6 +42,13 @@ module.exports = function(Friendmanagement) {
     }
   };
   
+  // 2. As a user, I need an API to retrieve the friends list for an email address.
+  Friendmanagement.retrieveFriend = function(argString, cb) {
+    FriendManagementService.retrieveFriend(argString, function(err, result) {
+      cb(null, result);
+    });
+  };  
+  
   // Remote method for all the user story API function.
   Friendmanagement.remoteMethod(
     'makeFriend', {
@@ -50,6 +57,16 @@ module.exports = function(Friendmanagement) {
       },
       returns: { arg: 'response', type: 'object' },
       http: { path: '/makeFriend', verb: 'post' }
+    }
+  );
+  
+  Friendmanagement.remoteMethod(
+    'retrieveFriend', {
+      accepts: { arg: 'email', type: 'object', http: { source: 'body' }, required: true,
+        description:'{ "email": "andy@example.com" }',
+      },
+      returns: { arg: 'response', type: 'object' },
+      http: { path: '/retrieveFriend', verb: 'post' }
     }
   );
 

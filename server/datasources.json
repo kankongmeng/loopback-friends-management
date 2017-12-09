@@ -4,13 +4,13 @@
     "connector": "memory"
   },
   "mysqlDs": {
-    "host": "myamazondbinstance.c0qhdgsr6mas.us-east-2.rds.amazonaws.com",
-    "port": "3306",
-    "url": "",
-    "database": "myAmazonDB",
-    "password": "45666564",
+    "host": "",
+    "port": "",
+    "url": "mysql://b70bda67845c7e:b650ef24@us-cdbr-iron-east-05.cleardb.net/heroku_0996ad89f8f00cd?reconnect=true",
+    "database": "",
+    "password": "",
     "name": "mysqlDs",
-    "user": "root",
+    "user": "",
     "connector": "mysql"
   },  
   "mongoDs": {

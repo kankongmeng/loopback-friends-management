@@ -35,33 +35,27 @@ module.exports = function(app) {
     app.models.FriendManagement.create([{
       email: 'abc@example.com',
       friend_email: 'bcd@example.com',
-      type: 'friend',
-      block: '0'
+      type: 'friend'
     }, {
       email: 'bcd@example.com',
       friend_email: 'abc@example.com',
-      type: 'friend',
-      block: '0'
+      type: 'friend'
     }, {
       email: 'bcd@example.com',
       friend_email: 'cde@example.com',
-      type: 'friend',
-      block: '0'
+      type: 'friend'
     }, {
       email: 'cde@example.com',
       friend_email: 'bcd@example.com',
-      type: 'friend',
-      block: '0'
+      type: 'friend'
     }, {
       email: 'abc@example.com',
       friend_email: 'cde@example.com',
-      type: 'friend',
-      block: '0'
+      type: 'friend'
     }, {
       email: 'cde@example.com',
       friend_email: 'abc@example.com',
-      type: 'friend',
-      block: '0'
+      type: 'friend'
     }, ], function(err, result) {
       if (err) throw err;
       console.log('FriendManagement Models created: \n', result);

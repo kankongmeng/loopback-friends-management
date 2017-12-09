@@ -6,7 +6,8 @@ var Utility = require('../custom/utility');
 var FriendType = {
   FRIEND: "friend",
   SUBSCRIBE: "subscribe",
-  FOLLOWER: "follower"
+  FOLLOWER: "follower",
+  BLOCKED: "blocked",
 };
 
 module.exports = {
@@ -19,8 +20,7 @@ module.exports = {
     AppModels.FriendManagement.create({
       email: argObject.friends[0],
       friend_email: argObject.friends[1],
-      type: FriendType.FRIEND,
-      block: '0'
+      type: FriendType.FRIEND
     }, function(err, result) {
     
       // If error occurs when insert record.
@@ -129,14 +129,39 @@ module.exports = {
       var bodyObject = {
         email: argObject.friends[0],
         friend_email: argObject.friends[1],
-        type: type,
-        block: '0'
+        type: type
       };
       
       Utility.UpdateFriendRelationship(bodyObject, function(err, result) {
         cb(null, result);
       });
     });        
-  }
+  },
+  
+  block: function(argObject, cb) {
+    // Declare response structure
+    var response = { "success": false, "message": "error: record exist, already blocked." };
+
+    // Check whether consist any existing connection.
+    let filter = { where: { email: argObject.friends[0], friend_email: argObject.friends[1] }};
+    AppModels.FriendManagement.find(filter, function(err, result) {
+
+      // If there is any record with block relationship.
+      if(result != "" && result[0].type == FriendType.BLOCKED) {
+        cb(null, response);
+        return;
+      }
+      
+      var bodyObject = {
+        email: argObject.friends[0],
+        friend_email: argObject.friends[1],
+        type: FriendType.BLOCKED
+      };
+      
+      Utility.UpdateFriendRelationship(bodyObject, function(err, result) {
+        cb(null, result);
+      });
+    });        
+  }  
 
 };

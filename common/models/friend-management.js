@@ -96,6 +96,30 @@ module.exports = function(Friendmanagement) {
     }
   };  
   
+  // 5. As a user, I need an API to block updates from an email address.
+  Friendmanagement.block = function(subscribers, cb) {
+    // Convert accept argument to standard utility arguments.
+    var argObject = { "friends": [subscribers.requestor, subscribers.target] }
+
+    // Ensure both email is valid.
+    var validateResult = Utility.ValidateBothEmail(argObject);
+    if(!validateResult.success) {
+      cb(null, validateResult);
+    } else {
+    
+      // Ensure both email addresses is registered emails.  
+      Utility.ValidateBothRegisteredEmail(argObject, function(err, result) {
+        if(result.success) {
+          FriendManagementService.block(argObject, function(err, result) {
+            cb(null, result);
+          });
+        } else {
+          cb(null, result);
+        }
+      });
+    }
+  }; 
+  
   // Remote method for all the user story API function.
   Friendmanagement.remoteMethod(
     'makeFriend', {
@@ -137,4 +161,14 @@ module.exports = function(Friendmanagement) {
     }
   );
   
+  Friendmanagement.remoteMethod(
+    'block', {
+      accepts: { arg: 'block', type: 'object', http: { source: 'body' }, required: true,
+        description:'{ "requestor": "lisa@example.com", "target": "john@example.com" }',
+      },
+      returns: { arg: 'response', type: 'object' },
+      http: { path: '/block', verb: 'post' }
+    }
+  );  
+
 };

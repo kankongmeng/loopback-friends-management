@@ -29,6 +29,7 @@ module.exports = function(Friendmanagement) {
     if(!validateResult.success) {
       cb(null, validateResult);
     } else {
+    
       // Ensure both email addresses is registered emails.  
       Utility.ValidateBothRegisteredEmail(argObject, function(err, result) {
         if(result.success) {
@@ -49,6 +50,28 @@ module.exports = function(Friendmanagement) {
     });
   };  
   
+  // 3. As a user, I need an API to retrieve the common friends list between two email addresses.
+  Friendmanagement.retrieveCommon = function(argObject, cb) {
+    // Ensure both email is valid.
+    var validateResult = Utility.ValidateBothEmail(argObject);
+    if(!validateResult.success) {
+      cb(null, validateResult);
+    } else {
+    
+      // Ensure both email address is registered email. 
+      Utility.ValidateBothRegisteredEmail(argObject, function(err, result) {
+        // If error occurs when insert record.
+        if(result.success) {
+          FriendManagementService.retrieveCommon(argObject, function(err, result) {
+            cb(null, result);     
+          });
+        } else {
+          cb(null, result);
+        }
+      });
+    }
+  };
+
   // Remote method for all the user story API function.
   Friendmanagement.remoteMethod(
     'makeFriend', {
@@ -67,6 +90,16 @@ module.exports = function(Friendmanagement) {
       },
       returns: { arg: 'response', type: 'object' },
       http: { path: '/retrieveFriend', verb: 'post' }
+    }
+  );
+  
+  Friendmanagement.remoteMethod(
+    'retrieveCommon', {
+      accepts: { arg: 'friends', type: 'object', http: { source: 'body' }, required: true,
+        description:'{ "friends": ["andy@example.com", "john@example.com"] }',
+      },
+      returns: { arg: 'response', type: 'object' },
+      http: { path: '/retrieveCommon', verb: 'post' }
     }
   );
 

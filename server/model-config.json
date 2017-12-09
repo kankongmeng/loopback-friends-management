@@ -41,11 +41,11 @@
     "public": false
   },
   "SPUser": {
-    "dataSource": "mongoDs",
+    "dataSource": "mysqlDs",
     "public": true
   },
   "FriendManagement": {
-    "dataSource": "mongoDs",
+    "dataSource": "mysqlDs",
     "public": true
   }
 }

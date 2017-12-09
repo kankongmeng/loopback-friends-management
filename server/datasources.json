@@ -3,6 +3,16 @@
     "name": "db",
     "connector": "memory"
   },
+  "mysqlDs": {
+    "host": "localhost",
+    "port": 3306,
+    "url": "",
+    "database": "loopback_bookstore",
+    "password": "45666564",
+    "name": "mysqlDs",
+    "user": "root",
+    "connector": "mysql"
+  },  
   "mongoDs": {
     "host": "",
     "port": 0,

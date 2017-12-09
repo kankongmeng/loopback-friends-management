@@ -105,5 +105,38 @@ module.exports = {
       }
     });
   },
+  
+  subscribe: function(argObject, cb) {
+    // Declare response structure
+    var response = { "success": false, "message": "error: record exist, already is subscriber." };
+    var type = FriendType.SUBSCRIBE;
+    
+    // Check whether consist any existing connection.
+    let filter = { where: { email: argObject.friends[0], friend_email: argObject.friends[1] }};
+    AppModels.FriendManagement.find(filter, function(err, result) {
+
+      // If there is any record match.
+      if(result != "") {
+        // If is friend relationship
+        if(result[0].type == FriendType.FRIEND) {
+          type = FriendType.FOLLOWER;
+        } else if(result[0].type == FriendType.FOLLOWER || result[0].type == type) {
+          cb(null, response);
+          return;
+        }
+      }
+      
+      var bodyObject = {
+        email: argObject.friends[0],
+        friend_email: argObject.friends[1],
+        type: type,
+        block: '0'
+      };
+      
+      Utility.UpdateFriendRelationship(bodyObject, function(err, result) {
+        cb(null, result);
+      });
+    });        
+  }
 
 };

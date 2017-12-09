@@ -43,6 +43,23 @@ module.exports = {
         cb(null, response);
       }      
     });
-  }
+  },
+  
+  UpdateFriendRelationship: function(bodyObject, cb) {
+    var response = { "success": false, "message": null };
+    // Insert both email as friend relationship
+    AppModels.FriendManagement.replaceOrCreate(bodyObject, function(err, result) {
+      // If error occurs when insert record.
+      if(err) {
+        response.message = err;
+        cb(null, response);
+        return;
+      }
+      // If no error, return result.
+      response.success = true;
+      response.message = result;
+      cb(null, response);
+    });
+  }  
 
 };

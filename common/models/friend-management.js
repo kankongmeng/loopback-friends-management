@@ -71,7 +71,31 @@ module.exports = function(Friendmanagement) {
       });
     }
   };
+  
+  // 4. As a user, I need an API to subscribe to updates from an email address.
+  Friendmanagement.subscribe = function(subscribers, cb) {
+    // Convert accept argument to standard utility arguments.
+    var argObject = { "friends": [subscribers.requestor, subscribers.target] }
 
+    // Ensure both email is valid.
+    var validateResult = Utility.ValidateBothEmail(argObject);
+    if(!validateResult.success) {
+      cb(null, validateResult);
+    } else {
+    
+      // Ensure both email addresses is registered emails.  
+      Utility.ValidateBothRegisteredEmail(argObject, function(err, result) {
+        if(result.success) {
+          FriendManagementService.subscribe(argObject, function(err, result) {
+            cb(null, result);
+          });
+        } else {
+          cb(null, result);
+        }
+      });
+    }
+  };  
+  
   // Remote method for all the user story API function.
   Friendmanagement.remoteMethod(
     'makeFriend', {
@@ -102,5 +126,15 @@ module.exports = function(Friendmanagement) {
       http: { path: '/retrieveCommon', verb: 'post' }
     }
   );
-
+  
+  Friendmanagement.remoteMethod(
+    'subscribe', {
+      accepts: { arg: 'subscribers', type: 'object', http: { source: 'body' }, required: true,
+        description:'{ "requestor": "lisa@example.com", "target": "john@example.com" }',
+      },
+      returns: { arg: 'response', type: 'object' },
+      http: { path: '/subscribe', verb: 'post' }
+    }
+  );
+  
 };

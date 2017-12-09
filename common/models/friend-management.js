@@ -48,7 +48,7 @@ module.exports = function(Friendmanagement) {
     FriendManagementService.retrieveFriend(argString, function(err, result) {
       cb(null, result);
     });
-  };  
+  };
   
   // 3. As a user, I need an API to retrieve the common friends list between two email addresses.
   Friendmanagement.retrieveCommon = function(argObject, cb) {
@@ -118,7 +118,14 @@ module.exports = function(Friendmanagement) {
         }
       });
     }
-  }; 
+  };
+  
+  // As a user, I need an API to retrieve all email addresses that can receive updates from an email address.
+  Friendmanagement.sendUpdates = function(updates, cb) {
+    FriendManagementService.sendUpdates(updates, function(err, result) {
+      cb(null, result);
+    });
+  };  
   
   // Remote method for all the user story API function.
   Friendmanagement.remoteMethod(
@@ -157,7 +164,7 @@ module.exports = function(Friendmanagement) {
         description:'{ "requestor": "lisa@example.com", "target": "john@example.com" }',
       },
       returns: { arg: 'response', type: 'object' },
-      http: { path: '/subscribe', verb: 'post' }
+      http: { path: '/subscribe', verb: 'put' }
     }
   );
   
@@ -167,7 +174,17 @@ module.exports = function(Friendmanagement) {
         description:'{ "requestor": "lisa@example.com", "target": "john@example.com" }',
       },
       returns: { arg: 'response', type: 'object' },
-      http: { path: '/block', verb: 'post' }
+      http: { path: '/block', verb: 'put' }
+    }
+  );
+
+  Friendmanagement.remoteMethod(
+    'sendUpdates', {
+      accepts: { arg: 'updates', type: 'object', http: { source: 'body' }, required: true,
+        description:'{ "sender": "john@example.com", "text": "Hello World! kate@example.com" }',
+      },
+      returns: { arg: 'response', type: 'object' },
+      http: { path: '/sendUpdates', verb: 'post' }
     }
   );  
 

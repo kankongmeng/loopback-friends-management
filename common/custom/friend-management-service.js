@@ -14,27 +14,44 @@ module.exports = {
 
   makeFriend: function(argObject, cb) {
     // Declare response structure
-    var response = { "success": false, "message": null };
+    var response = { "success": false, "message": "error: you are being blocked." };
 
-    // Insert both email as friend relationship
-    AppModels.FriendManagement.create({
-      email: argObject.friends[0],
-      friend_email: argObject.friends[1],
-      type: FriendType.FRIEND
-    }, function(err, result) {
-    
-      // If error occurs when insert record.
-      if(err) {
-        response.message = err;
-        cb(null, response);
-        return;
+    // Check whether consist any existing connection.
+    let filter = { where: { email: argObject.friends[1], friend_email: argObject.friends[0] }};
+    AppModels.FriendManagement.find(filter, function(err, result) {
+
+      // If there is any record.
+      if(result != "") {
+        // If email2 blocked email1.
+        if(result[0].type == FriendType.BLOCKED) {
+          cb(null, response);
+        } else {
+          var bodyObject = {
+            email: argObject.friends[0],
+            friend_email: argObject.friends[1],
+            type: FriendType.FRIEND
+          };
+          Utility.MakeFriendship(bodyObject, function(err, result) {
+            cb(null, result);
+          });
+        }
+      } else {
+        // Insert both email as friend relationship
+        let bodyObject = [{
+          email: argObject.friends[0],
+          friend_email: argObject.friends[1],
+          type: FriendType.FRIEND
+        }, {
+          email: argObject.friends[1],
+          friend_email: argObject.friends[0],
+          type: FriendType.FRIEND
+        }, ];
+        
+        Utility.MakeFriendship(bodyObject, function(err, result) {
+          cb(null, result);
+        });
       }
-      
-      // If no error, return result.
-      response.success = true;
-      response.message = result;
-      cb(null, response);
-    });
+    });   
   },
   
   retrieveFriend: function(argString, cb) {
@@ -139,7 +156,7 @@ module.exports = {
   },
   
   block: function(argObject, cb) {
-    // Declare response structure
+    // Declare response structure.
     var response = { "success": false, "message": "error: record exist, already blocked." };
 
     // Check whether consist any existing connection.
@@ -162,6 +179,41 @@ module.exports = {
         cb(null, result);
       });
     });        
-  }  
+  },
+  
+  sendUpdates: function(updates, cb) {
+    // Declare response structure.
+    var response = { "success": false, "recipients": "no result found." };
+    var recipients = [];
+    var email = updates.sender;
+    var text = updates.text;
+    var arrTaggedEmail = Utility.getTaggedEmail(text);
+
+    // If there is @mentioned in the update.
+    if(arrTaggedEmail != null) {
+      recipients = recipients.concat(Utility.getTaggedEmail(text));
+    }
+    
+    // Find friend email with input email.
+    let filter = { where: { email: email }};
+    AppModels.FriendManagement.find(filter, function(err, result) {
+    
+      // If there is any record match.
+      if(result != "") {
+        for(var i = 0; i < result.length; i++) {
+          // If relationship is not blocked.
+          if(result[i].type != FriendType.BLOCKED) {
+            recipients.push(result[i].friend_email);
+          }
+        }
+      }
+      
+      if(recipients.length > 0) {
+        response.success = true;
+        response.recipients = recipients;
+      }
+      cb(null, response);
+    });    
+  }
 
 };

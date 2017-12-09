@@ -4,6 +4,13 @@ var AppModels = require('../../server/server').models;
 
 module.exports = {
 
+  getTaggedEmail: function(text) {
+    var emailsArray = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+    if (emailsArray != null && emailsArray.length) {
+      return emailsArray;
+    }
+  },
+
   ArrfindMatch: function(arrayOne, arrayTwo) {
     var res = []
     for (var i = 0; i < arrayOne.length; i++) {
@@ -60,6 +67,22 @@ module.exports = {
       response.message = result;
       cb(null, response);
     });
-  }  
+  },
+  
+  MakeFriendship: function(bodyObject, cb) {
+    var response = { "success": false, "message": null };
+    AppModels.FriendManagement.create(bodyObject, function(err, result) {
+      // If error occurs when insert record.
+      if(err) {
+        response.message = err;
+        cb(null, response);
+        return;
+      }
+      // If no error, return result.
+      response.success = true;
+      response.message = result;
+      cb(null, response);
+    });
+  }    
 
 };

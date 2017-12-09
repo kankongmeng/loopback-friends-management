@@ -18,4 +18,39 @@ module.exports = function(Friendmanagement) {
   Friendmanagement.disableRemoteMethodByName('count');
   Friendmanagement.disableRemoteMethodByName('replaceById');
   
+  var Utility = require('../custom/utility');
+  var FriendManagementService = require('../custom/friend-management-service');
+  
+  // SP Group full stack engineer user story.
+  // 1. As a user, I need an API to create a friend connection between two email addresses.
+  Friendmanagement.makeFriend = function(argObject, cb) {
+    // Ensure both email is valid.
+    var validateResult = Utility.ValidateBothEmail(argObject);
+    if(!validateResult.success) {
+      cb(null, validateResult);
+    } else {
+      // Ensure both email addresses is registered emails.  
+      Utility.ValidateBothRegisteredEmail(argObject, function(err, result) {
+        if(result.success) {
+          FriendManagementService.makeFriend(argObject, function(err, result) {
+            cb(null, result);
+          });
+        } else {
+          cb(null, result);
+        }
+      });
+    }
+  };
+  
+  // Remote method for all the user story API function.
+  Friendmanagement.remoteMethod(
+    'makeFriend', {
+      accepts: { arg: 'friends', type: 'object', http: { source: 'body' }, required: true,
+        description: '{ "friends": ["andy@example.com", "john@example.com"] }',
+      },
+      returns: { arg: 'response', type: 'object' },
+      http: { path: '/makeFriend', verb: 'post' }
+    }
+  );
+
 };

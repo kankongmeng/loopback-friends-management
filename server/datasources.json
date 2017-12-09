@@ -4,10 +4,10 @@
     "connector": "memory"
   },
   "mysqlDs": {
-    "host": "localhost",
-    "port": 3306,
+    "host": "myamazondbinstance.c0qhdgsr6mas.us-east-2.rds.amazonaws.com",
+    "port": "3306",
     "url": "",
-    "database": "loopback_bookstore",
+    "database": "myAmazonDB",
     "password": "45666564",
     "name": "mysqlDs",
     "user": "root",
